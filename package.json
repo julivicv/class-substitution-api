@@ -32,7 +32,7 @@
     "@swc/core": "^1.3.64",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
-    "@types/node": "^20.3.1",
+    "@types/node": "^20.6.3",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "@typescript-eslint/parser": "^5.59.11",
@@ -41,13 +41,14 @@
     "eslint-plugin-prettier": "^4.2.1",
     "jest": "^29.5.0",
     "prettier": "^2.8.8",
+    "prisma": "^5.3.1",
     "source-map-support": "^0.5.21",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.0",
     "ts-loader": "^9.4.3",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.1.3"
+    "typescript": "^5.2.2"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -65,5 +66,20 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  }
+  },
+  "description": "<p align=\"center\">\r   <a href=\"http://nestjs.com/\" target=\"blank\"><img src=\"https://nestjs.com/img/logo-small.svg\" width=\"120\" alt=\"Nest Logo\" /></a>\r </p>",
+  "main": ".eslintrc.js",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/julivicv/class-substitution-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/julivicv/class-substitution-api/issues"
+  },
+  "homepage": "https://github.com/julivicv/class-substitution-api#readme"
 }

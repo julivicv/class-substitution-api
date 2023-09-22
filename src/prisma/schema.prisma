@@ -1,0 +1,175 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Subject {
+  id                Int       @id @default(autoincrement())
+  name              String
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  offers            Offers[]
+  RequestedSubject  Request[] @relation("RequestedSubject")
+  SubstituteSubject Request[] @relation("SubstituteSubject")
+
+  Request Request[]
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  password_hash String
+  role          String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  teachers      Teacher[]
+}
+
+model Teacher {
+  id                    Int                      @id @default(autoincrement())
+  siape                 String                   @unique
+  name                  String
+  user                  User                     @relation(fields: [userId], references: [id])
+  userId                Int
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
+  coordinators          Coordinator[]
+  electiveCycleTeachers Teacher_elective_cycle[]
+  managers              Manager[]
+  offers                Offers[]
+  requestedByTeacher    Request[]                @relation("RequestedByTeacher")
+  substituteForTeacher  Request[]                @relation("SubstituteForTeacher")
+  assignedToRequests    Request[]                @relation("AssignedToRequest")
+}
+
+model Coordinator {
+  id        Int       @id @default(autoincrement())
+  start     Int
+  end       Int
+  course    Course    @relation(fields: [courseId], references: [id])
+  courseId  Int
+  teacher   Teacher   @relation(fields: [teacherId], references: [id])
+  teacherId Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  requests  Request[]
+}
+
+model Course {
+  id           Int           @id @default(autoincrement())
+  name         String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  classes      Class[]
+  coordinators Coordinator[]
+}
+
+model Class {
+  id        Int       @id @default(autoincrement())
+  name      String
+  course    Course    @relation(fields: [courseId], references: [id])
+  courseId  Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  offers    Offers[]
+  requests  Request[]
+}
+
+model ElectiveCycle {
+  id                    Int                      @id @default(autoincrement())
+  year                  Int
+  half_yearly           Int
+  start                 Int
+  end                   Int
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
+  electiveCycleTeachers Teacher_elective_cycle[]
+  offers                Offers[]
+  requests              Request[]
+}
+
+model Teacher_elective_cycle {
+  id              Int           @id @default(autoincrement())
+  teacher         Teacher       @relation(fields: [teacherId], references: [id])
+  teacherId       Int
+  electiveCycle   ElectiveCycle @relation(fields: [electiveCycleId], references: [id])
+  electiveCycleId Int
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Manager {
+  id        Int       @id @default(autoincrement())
+  start     Int
+  end       Int
+  level     Int
+  teacher   Teacher   @relation(fields: [teacherId], references: [id])
+  teacherId Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  requests  Request[]
+}
+
+model Offers {
+  id              Int           @id @default(autoincrement())
+  teacher         Teacher       @relation(fields: [teacherId], references: [id])
+  teacherId       Int
+  class           Class         @relation(fields: [classId], references: [id])
+  classId         Int
+  electiveCycle   ElectiveCycle @relation(fields: [electiveCycleId], references: [id])
+  electiveCycleId Int
+  subject         Subject       @relation(fields: [subjectId], references: [id])
+  subjectId       Int
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Request {
+  id                   Int      @id @default(autoincrement())
+  date                 DateTime
+  hour                 Int
+  justify              String
+  annex                String
+  type                 String
+  knowledgeSubstitute  String
+  managerAuthorization String
+  knowledgeManager     String
+  knowledgeCoordinator String
+  teacherRequested     Teacher  @relation("RequestedByTeacher", fields: [teacherRequestId], references: [id])
+  teacherRequestId     Int
+
+  teacherSubstitute   Teacher @relation("SubstituteForTeacher", fields: [teacherSubstituteId], references: [id])
+  teacherSubstituteId Int
+
+  cycle   ElectiveCycle @relation(fields: [cycleId], references: [id])
+  cycleId Int
+
+  subjectRequested Subject @relation("RequestedSubject", fields: [subjectRequestId], references: [id])
+  subjectRequestId Int
+
+  subjectSubstitute   Subject @relation("SubstituteSubject", fields: [subjectSubstituteId], references: [id])
+  subjectSubstituteId Int
+
+  class   Class @relation(fields: [classId], references: [id])
+  classId Int
+
+  manager   Manager @relation(fields: [managerId], references: [id])
+  managerId Int
+
+  coordinator   Coordinator @relation(fields: [coordinatorId], references: [id])
+  coordinatorId Int
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  assignedTeacher Teacher? @relation("AssignedToRequest", fields: [teacherId], references: [id])
+  teacherId       Int?
+  Subject         Subject? @relation(fields: [subjectId], references: [id])
+  subjectId       Int?
+}
